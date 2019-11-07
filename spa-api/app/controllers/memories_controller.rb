@@ -15,7 +15,9 @@ class MemoriesController < ApplicationController
 
   # POST /memories
   def create
+    child = Child.find_or_create_by(name: params[:child])
     @memory = Memory.new(memory_params)
+    @memory.child = child
 
     if @memory.save
       render json: @memory, status: :created, location: @memory

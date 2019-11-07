@@ -17,41 +17,38 @@ const addMemory = memory => {
 }
 
 const loadMemories = params => {
-    memories = [
-    {
-        title: "First memory",
-        child_id: "1",
-        category: "First category",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-        title: "Second memory",
-        child_id: "2",
-        category: "Second category",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-        title: "Third memory",
-        child_id: "3",
-        category: "Third category",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    }
-    ]
-
-    memories.forEach(memory => {
-        addMemory(memory)
+    data = fetch('http://localhost:3000/memories').then(response => {
+        memories = response.json()
+        memories.then(data => {
+            data.forEach(memory => {
+                addMemory(memory)
+            })
+        })
     })
 }
 
 const handleSubmission = e => {
     e.preventDefault()
-    memory = {
+    const memory = {
         title: e.target.title.value,
         child: e.target.child.value,
         category: e.target.category.value,
         content: e.target.content.value
     }
-    addMemory(memory)
+    fetch('http://localhost:3000/memories',
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(memory)
+    }).then(res => {
+        return res.json()
+    })
+        .then(data => {
+        addMemory(data)
+        e.target.reset()
+    })
 }
 
 document.addEventListener('DOMContentLoaded', () => {
