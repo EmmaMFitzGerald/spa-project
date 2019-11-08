@@ -3,7 +3,7 @@ const memoryContainer = document.querySelector('.memories-lists')
 
 const addMemory = memory => {
     memoryContainer.innerHTML += `
-    <div class="card">
+    <div id="${memory.id}" class="card">
     <div class="card-content">
     <span class="card-title">${memory.title}</span>
     <p>Child: ${memory.child_id} </p>
@@ -12,8 +12,19 @@ const addMemory = memory => {
         ${memory.content}
     </p>
     </div>
+    <button onclick="deleteMemory(${memory.id})">Delete</button>
     </div>
     `
+}
+
+function deleteMemory(id) {
+   document.getElementById(`${id}`).remove()
+   fetch(`http://localhost:3000/memories/${id}`, {
+       method: 'DELETE',
+       headers: {
+           'Content-Type' : 'application/json'
+       }
+   })
 }
 
 const loadMemories = params => {
@@ -33,7 +44,8 @@ const handleSubmission = e => {
         title: e.target.title.value,
         child: e.target.child.value,
         category: e.target.category.value,
-        content: e.target.content.value
+        content: e.target.content.value,
+        id: e.target.id.value
     }
     fetch('http://localhost:3000/memories',
     {
